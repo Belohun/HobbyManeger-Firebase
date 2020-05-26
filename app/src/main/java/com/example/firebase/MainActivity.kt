@@ -1,9 +1,11 @@
 package com.example.firebase
-
+import android.app.ActivityOptions
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -11,14 +13,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.firebase.ui.login.LoginActivity
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_add.*
 import kotlinx.android.synthetic.main.layout_add.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.IOException
-
 class MainActivity : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,7 @@ class MainActivity : AppCompatActivity() {
             val dialogView = LayoutInflater.from(this).inflate(R.layout.layout_add,null)
             val mBuilder = AlertDialog.Builder(this)
                 .setView(dialogView)
-
+              val currentFragment =navController.currentDestination?.label.toString()
             //.setTitle("Add City")
             val mAlertDialog = mBuilder.show()
             dialogView.btn_add.setOnClickListener{
@@ -49,14 +51,26 @@ class MainActivity : AppCompatActivity() {
                 }
                 if(noErrors)
                 {
-
-
-
+                    val checked = checkbox.isChecked
                         try {
+                            when(currentFragment){
+                                "Movies"->{
+                                    Toast.makeText(this,"Movie added",Toast.LENGTH_SHORT).show()
+
+                                }
+                                "Books"->{
+                                    Toast.makeText(this,"Book added",Toast.LENGTH_SHORT).show()
+
+                                }
+                                "Games"->{
+                                    Toast.makeText(this,"Game added",Toast.LENGTH_SHORT).show()
+
+                                }
+                            }
                             mAlertDialog.dismiss()
                         }catch (e: IOException){
                             //activityViewModel.delete(cityInsert)
-                            dialogView.add_city_layout.error="Wrong city name"
+                            dialogView.add_city_layout.error="Wrong name"
                         }
 
 
@@ -69,6 +83,7 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+
         }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -80,7 +95,16 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.logout -> true
+
+            R.id.logout -> {
+                FirebaseAuth.getInstance().signOut()
+                val intent = Intent(this, LoginActivity::class.java)
+                val options =
+                    ActivityOptions.makeCustomAnimation(this, R.anim.fade_out, R.anim.fade_in)
+                startActivity(intent,options.toBundle())
+                finish()
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
 
         }
