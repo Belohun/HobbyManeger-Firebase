@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/navigation_games"
-        android:name="com.example.firebase.ui.movies.MoviesFragment"
+        android:name="com.example.firebase.ui.games.GamesFragment"
         android:label="@string/title_games"
         tools:layout="@layout/fragment_games" />
 
     <fragment
         android:id="@+id/navigation_movies"
-        android:name="com.example.firebase.ui.games.GamesFragment"
+        android:name="com.example.firebase.ui.movies.MoviesFragment"
         android:label="@string/title_movies"
         tools:layout="@layout/fragment_moviess" />
 </navigation>

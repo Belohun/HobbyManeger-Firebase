@@ -14,8 +14,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.example.firebase.database.Database
 import com.example.firebase.ui.login.LoginActivity
+import com.example.pogodynka.recyclerViewAdapter
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -23,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_add.*
 import kotlinx.android.synthetic.main.layout_add.view.*
 import java.io.IOException
+import java.util.*
 import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
@@ -36,13 +39,13 @@ class MainActivity : AppCompatActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_books, R.id.navigation_movies, R.id.navigation_games))
+                R.id.navigation_books, R.id.navigation_games, R.id.navigation_movies))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         val firebase = FirebaseDatabase.getInstance()
         val firebaseAuth = FirebaseAuth.getInstance()
         val currentUser = firebaseAuth.currentUser!!.uid
-        val myRef = firebase.getReference("ArrayData")
+        val myRef = firebase.getReference(currentUser)
         fab_add.setOnClickListener{
             val dialogView = LayoutInflater.from(this).inflate(R.layout.layout_add,null)
             val mBuilder = AlertDialog.Builder(this)
@@ -65,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                 if(noErrors)
                 {
                         try {
-                            myRef.setValue("hello word")
+                            myRef.child(currentFragment).child(firebaseInput.name).setValue(firebaseInput)
                             Log.d("Hobbytext",firebaseInput.name)
                             Log.d("hobbychb",firebaseInput.finished.toString())
                             Toast.makeText(this,"${currentFragment.dropLast(1)} added",Toast.LENGTH_SHORT).show()
@@ -83,6 +86,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+
 
 
         }

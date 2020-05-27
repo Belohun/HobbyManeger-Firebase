@@ -19,7 +19,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/hobby_row_checkbox"
-            android:id="@+id/cityTextView"
+            android:id="@+id/hobbyTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Hobby name"
