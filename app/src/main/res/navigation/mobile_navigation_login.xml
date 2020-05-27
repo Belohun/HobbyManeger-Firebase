@@ -23,6 +23,7 @@
             android:id="@+id/action_navigation_login_to_navigation_register"
             app:destination="@id/navigation_register"
             app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_left"/>
+            app:exitAnim="@anim/slide_out_left"
+            />
     </fragment>
 </navigation>

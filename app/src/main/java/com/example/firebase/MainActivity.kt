@@ -2,6 +2,7 @@ package com.example.firebase
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -13,12 +14,17 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.firebase.database.Database
 import com.example.firebase.ui.login.LoginActivity
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_add.*
 import kotlinx.android.synthetic.main.layout_add.view.*
 import java.io.IOException
+import kotlin.math.log
+
 class MainActivity : AppCompatActivity() {
 
 
@@ -33,15 +39,22 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_books, R.id.navigation_movies, R.id.navigation_games))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        val firebase = FirebaseDatabase.getInstance()
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val currentUser = firebaseAuth.currentUser!!.uid
+        val myRef = firebase.getReference("ArrayData")
         fab_add.setOnClickListener{
             val dialogView = LayoutInflater.from(this).inflate(R.layout.layout_add,null)
             val mBuilder = AlertDialog.Builder(this)
                 .setView(dialogView)
-              val currentFragment =navController.currentDestination?.label.toString()
-            //.setTitle("Add City")
+            val currentFragment =navController.currentDestination?.label.toString()
             val mAlertDialog = mBuilder.show()
             dialogView.btn_add.setOnClickListener{
                 var noErrors = true
+                val hobbyText = dialogView.add_city_text.text.toString()
+                val hobbychb = dialogView.checkbox.isChecked
+                val firebaseInput = Database(hobbyText,hobbychb)
+                Log.d("CurrentUser",currentUser)
                 if(dialogView.add_city_text.text!!.isEmpty())
                 {
                     dialogView.add_city_layout.error = "Field must not be empty "
@@ -51,25 +64,13 @@ class MainActivity : AppCompatActivity() {
                 }
                 if(noErrors)
                 {
-                    val checked = checkbox.isChecked
                         try {
-                            when(currentFragment){
-                                "Movies"->{
-                                    Toast.makeText(this,"Movie added",Toast.LENGTH_SHORT).show()
-
-                                }
-                                "Books"->{
-                                    Toast.makeText(this,"Book added",Toast.LENGTH_SHORT).show()
-
-                                }
-                                "Games"->{
-                                    Toast.makeText(this,"Game added",Toast.LENGTH_SHORT).show()
-
-                                }
-                            }
+                            myRef.setValue("hello word")
+                            Log.d("Hobbytext",firebaseInput.name)
+                            Log.d("hobbychb",firebaseInput.finished.toString())
+                            Toast.makeText(this,"${currentFragment.dropLast(1)} added",Toast.LENGTH_SHORT).show()
                             mAlertDialog.dismiss()
                         }catch (e: IOException){
-                            //activityViewModel.delete(cityInsert)
                             dialogView.add_city_layout.error="Wrong name"
                         }
 
